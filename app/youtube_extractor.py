@@ -19,6 +19,7 @@ def my_hook(d):
 
 
 ydl_opts = {
+    'youtube_include_dash_manifest': False,
     'logger': MyLogger(),
     'progress_hooks': [my_hook],
     'no_color': True,
@@ -48,6 +49,7 @@ def download_mp3(videoid, stdout=False):
 def get_video_info(videoid):
     ydl_opts['extract_flat'] = True
     ydl_opts['dump_single_json'] = True
+
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
         return ydl.extract_info(
             'https://www.youtube.com/watch?v={}'.format(videoid),
