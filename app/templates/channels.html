@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div id="channel-form">
+    <form action="{{ url_for('subscribe') }}" method="post">
+        {{ form_sub.hidden_tag() }}
+        {{ form_sub.channel.label }}: {{ form_sub.channel() }}  {{ form_sub.submit() }}
+        {% for error in form_sub.channel.errors %}
+        <span style="color: red;">{{ error }}</span>
+        {% endfor %}
+    </form>
+    </div>
+
+    <table>
+        <tbody>
+            {% for channel in channels %}
+            <tr>
+                <th>{{ channel.name }}</th>
+                <td><small>{{ channel.videos|length }} videos</small></td>
+                <td>
+                    <form action="{{ url_for('unsubscribe') }}" method="post" novalidate>
+                    {{ form_unsub.channel(value=channel.id) }}
+                    {{ form_unsub.submit() }}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

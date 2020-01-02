@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+    {% for channel, videos in channel_videos.items() %}
+        <div id="container">
+	    <h1>{{ channel }}</h1>
+	    {% for video in videos %}
+	    <p class="video-head">
+                <small>[{{ (video.duration/60)|int }}m]</small>
+		<a href="{{ url_for('serve_mp3_file', videoid=video.video_id) }}"><button class="btn btn-default">mp3</button></a>
+		<a href="{{ url_for('video_info', videoid=video.video_id) }}">{{ video.title }}</a>
+                <small>[{{ video.upload_date|datetimeformat('delta') }}]</small>
+	    </p>
+	    {% endfor %}
+        </div>
+    {% endfor %}
+{% endblock %}

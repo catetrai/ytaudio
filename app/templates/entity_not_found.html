@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>{% if 'type' in entity %}{% if 'value' in entity %} '{{ entity['value'] }}' {% endif %}{% endif %}Not Found</h1>
+    <p>{{ error }}</p>
+{% endblock %}

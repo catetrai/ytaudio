@@ -1,0 +1,15 @@
+<html>
+    <head>
+      {% if title %}
+      <title>{{ title }} - ytaudio</title>
+      {% else %}
+      <title>ytaudio</title>
+      {% endif %}
+      <link rel="stylesheet" href="/static/style.css">
+    </head>
+    <body>
+	<div id="nav-header">ytaudio: <a href="{{ url_for('index') }}">Home</a>   |   <a href="{{ url_for('channels') }}">Channels</a>   |   <a href="{{ url_for('explore') }}">Explore</a></div>
+        <hr>
+        {% block content %}{% endblock %}
+    </body>
+</html>
