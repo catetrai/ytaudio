@@ -21,6 +21,8 @@ def my_hook(d):
 ydl_opts = {
     'logger': MyLogger(),
     'progress_hooks': [my_hook],
+    'no_color': True,
+    'ignoreerrors': True
 }
 
 def download_mp3(videoid, stdout=False):

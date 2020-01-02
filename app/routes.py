@@ -7,6 +7,7 @@ from app import app, db
 from app.models import Channel, Video
 from app.forms import SubscribeForm, UnsubscribeForm
 from app.youtube_extractor import download_mp3, get_channel_videos
+from youtube_dl.utils import DownloadError
 
 
 @app.route('/')
@@ -41,14 +42,17 @@ def subscribe():
     form = SubscribeForm()
     if form.validate_on_submit():
         videos = get_channel_videos(form.channel.data)
+
         if not videos:
             return render_template('entity_not_found.html', entity={'type':'Channel','value':form.channel.data}, error=''), 404
         
         channel = Channel(name=videos[0]['uploader_id'], channel_id=videos[0]['channel_id'])
         db.session.add(channel)
         db.session.commit()
+
         for v in videos:
-            video = Video(video_id=v['id'],
+            if v and 'id' in v:
+                video = Video(video_id=v['id'],
                             title=v['title'],
                             channel_id=channel.id,
                             description=v['description'],
@@ -56,7 +60,7 @@ def subscribe():
                             duration=v['duration'],
                             upload_date=datetime.strptime(v['upload_date'], '%Y%m%d'),
                             view_count=v['view_count'])
-            db.session.add(video)
+                db.session.add(video)
         db.session.commit()
         
     return redirect('/channels')
