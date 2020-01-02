@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <div id="channel-form">
+<div id="channel-form">
     <form action="{{ url_for('subscribe') }}" method="post">
         {{ form_sub.hidden_tag() }}
         {{ form_sub.channel.label }}: {{ form_sub.channel() }}  {{ form_sub.submit() }}
@@ -9,8 +9,9 @@
         <p style="color: red;">{{ error }}</p>
         {% endfor %}
     </form>
-    </div>
+</div>
 
+<div id="channel-list">
     <table>
         <tbody>
             {% for channel in channels %}
@@ -26,4 +27,5 @@
             {% endfor %}
         </tbody>
     </table>
+</div>
 {% endblock %}
