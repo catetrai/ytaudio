@@ -59,11 +59,14 @@ def get_video_info(videoid):
 def get_channel_videos(channel, short=False, daterange=None):
 
     def get_info(yt_url):
+        url = yt_url
         if short:
-            url = ydl.extract_info(yt_url, download=False).get('url')
-        else:
-            url = yt_url
-        return ydl.extract_info(url, download=False).get('entries', [])
+            url = ydl.extract_info(yt_url, download=False).get('url', '')
+
+        download = ydl.extract_info(url, download=False)
+        if download:
+            return download.get('entries', [])
+        return []
 
     #if daterange is None:
     #    daterange = DateRange(start='now-8months', end='now')

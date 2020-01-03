@@ -40,7 +40,7 @@ def subscribe():
         videos = get_channel_videos(form.channel.data)
 
         if not videos:
-            return render_template('entity_not_found.html', entity={'type':'Channel','value':form.channel.data}, error=''), 404
+            raise DownloadError('Channel \'{}\' not found'.format(form.channel.data))
         
         channel = Channel(name=videos[0]['uploader_id'], channel_id=videos[0]['channel_id'])
         db.session.add(channel)
@@ -68,7 +68,7 @@ def unsubscribe():
 #    if form.validate_on_submit():
     channel = Channel.query.get(form.channel.data)
     if not channel:
-        return render_template('entity_not_found.html', entity={'type':'Channel'}, error=''), 404
+        raise DownloadError('Channel \'{}\' not found'.format(form.channel.data))
 
     for video in Video.query.with_parent(channel).all():
         db.session.delete(video)
@@ -92,27 +92,29 @@ def unsubscribe():
 
 @app.route('/audio/<videoid>')
 def serve_mp3_file(videoid):
+
+    def set_downloaded_flag(videoid):
+        video = Video.query.filter_by(video_id=videoid).first_or_404()
+        video.is_downloaded = True
+        db.session.commit()
+        return
+
     try:
         if download_mp3(videoid) == 0:
             set_downloaded_flag(videoid)
             return send_file('static/{}.mp3'.format(videoid), attachment_filename='{}.mp3'.format(videoid))
     except:
-        abort(404)
+        raise DownloadError('Could not download audio for video ID \'{}\''.format(videoid))
     finally:
-        os.remove('app/static/{}.mp3'.format(videoid))
-        print('Deleted file \'{}.mp3\''.format(videoid))
+        try:
+            os.remove('app/static/{}.mp3'.format(videoid))
+            print('Deleted file \'{}.mp3\''.format(videoid))
+        except OSError:
+            raise DownloadError('Could not download audio for video ID \'{}\''.format(videoid))
 
 
 @app.route('/explore')
 def explore():
     return render_template('base.html')
-
-
-
-def set_downloaded_flag(videoid):
-    video = Video.query.filter_by(video_id=videoid).first_or_404()
-    video.is_downloaded = True
-    db.session.commit()
-    return
 
 
