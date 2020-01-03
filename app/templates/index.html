@@ -1,17 +1,20 @@
 {% extends "base.html" %}
 
 {% block content %}
-    {% for channel, videos in channel_videos.items() %}
-        <div id="container">
-	    <h1>{{ channel }}</h1>
-	    {% for video in videos %}
-	    <p class="video-head">
+    {% for item in channel_videos %}
+        <div class="container" id="{{ item['channel'].channel_id }}">
+	    <h1>{{ item['channel'].name }}</h1>
+	    {% for video in item['videos'] %}
+	    <p class="video-head" {% if loop.index > 5 %} style="display: none;" {% endif %}>
                 <small>[{{ (video.duration/60)|int }}m]</small>
 		<a href="{{ url_for('serve_mp3_file', videoid=video.video_id) }}"><button class="btn btn-default">mp3</button></a>
 		<a href="{{ url_for('video_info', videoid=video.video_id) }}">{{ video.title }}</a>
                 <small>[{{ video.upload_date|datetimeformat('delta') }}]</small>
 	    </p>
 	    {% endfor %}
+            <div class="load-more-button-container">
+            <button id="{{ item['channel'].channel_id }}" onclick="loadMore(this)">load more</button>
+            </div>
         </div>
     {% endfor %}
 {% endblock %}

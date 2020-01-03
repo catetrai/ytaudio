@@ -13,13 +13,9 @@ from youtube_dl.utils import DownloadError
 @app.route('/')
 @app.route('/index')
 def index():
-    channel_videos = {}
+    channel_videos = []
     for channel in Channel.query.all():
-        channel_videos[channel.name] = Video.query.with_parent(channel) \
-                                                  .filter_by(is_downloaded=False) \
-                                                  .order_by(Video.upload_date.desc()) \
-                                                  .limit(5) \
-                                                  .all()
+        channel_videos.append({ 'channel': channel, 'videos': channel.get_nondownloaded_videos() })
     return render_template('index.html', channel_videos=channel_videos)
 
 

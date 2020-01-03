@@ -26,3 +26,10 @@ class Channel(db.Model):
 
     def __repr__(self):
         return '<Channel \'{}\'>'.format(self.name)
+
+    def get_nondownloaded_videos(self):
+        return Video.query.with_parent(self) \
+                          .filter_by(is_downloaded=False) \
+                          .order_by(Video.upload_date.desc()) \
+                          .all()
+

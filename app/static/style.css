@@ -42,7 +42,7 @@ strong {
     text-align: center;
 }
 
-#container {
+.container {
     margin: 15px;
 }
 
@@ -53,4 +53,8 @@ strong {
 
 #channel-list form {
     margin:auto
+}
+
+.load-more-button-container {
+    text-align: center;
 }
