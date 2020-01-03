@@ -75,14 +75,11 @@ def get_channel_videos(channel, short=False, daterange=None):
 
     ydl_opts['dump_single_json'] = True
     if short: ydl_opts['extract_flat'] = True
-    url = 'https://www.youtube.com/user/{}'.format(channel)
 
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-        try:
-            url = 'https://www.youtube.com/channel/{}'.format(channel)    
-            return get_info(url)
-        except:
+        url = 'https://www.youtube.com/channel/{}'.format(channel)    
+        if not get_info(url):
             url = 'https://www.youtube.com/user/{}'.format(channel)
-            return get_info(url)
+        return get_info(url)
 
 
