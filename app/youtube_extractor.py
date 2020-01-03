@@ -57,6 +57,14 @@ def get_video_info(videoid):
         )
 
 def get_channel_videos(channel, short=False, daterange=None):
+
+    def get_info(yt_url):
+        if short:
+            url = ydl.extract_info(yt_url, download=False).get('url')
+        else:
+            url = yt_url
+        return ydl.extract_info(url, download=False).get('entries', [])
+
     #if daterange is None:
     #    daterange = DateRange(start='now-8months', end='now')
     #    print(daterange)
@@ -64,22 +72,14 @@ def get_channel_videos(channel, short=False, daterange=None):
 
     ydl_opts['dump_single_json'] = True
     if short: ydl_opts['extract_flat'] = True
+    url = 'https://www.youtube.com/user/{}'.format(channel)
 
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-
-        if short:
-            url = ydl.extract_info(
-                'https://www.youtube.com/user/{}'.format(channel),
-                download=False
-            ).get('url')
-            return ydl.extract_info(
-                url,
-                download=False
-            ).get('entries', [])
-        else:
-            return ydl.extract_info(
-                'https://www.youtube.com/user/{}'.format(channel),
-                download=False
-            ).get('entries', [])
+        try:
+            url = 'https://www.youtube.com/channel/{}'.format(channel)    
+            return get_info(url)
+        except:
+            url = 'https://www.youtube.com/user/{}'.format(channel)
+            return get_info(url)
 
 
